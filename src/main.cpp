@@ -3,8 +3,8 @@
 #include <iostream>
 
 int main() {
-	cv::Mat img = cv::Scalar(255,0,0);
-	cv::imshow("Red", img);	
+	cv::Mat img = cv::Mat(480, 640, CV_8UC3, cv::Scalar(0, 0, 255));
+	cv::imshow("640x480 Red image", img);
 	cv::waitKey(1);
 	std::cin.get();
 
