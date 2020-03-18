@@ -10,9 +10,9 @@ Windows: build_windows.cmd - creates Visual Studio 2019 project
 any required libs will be automatically downloaded & installed in correct versions for respective platforms
 
 ##  Progress history
-| Task | Commit | Date |
-| ---------- | ------------- | ----------- |
-| Finished readme | ------------- | 2020-03-18 |
+| Task & Commit | Date |
+| ---------- | ----------- |
+| [Finished readme](https://github.com/adamczykpiotr/SemiAutonomousLaneKeepingSystem/commit/bf5befb4afbd0a68cf6ef7d568b5c7bef2e1be17) | 2020-03-18 |
 
 ## To do
 - [ ] Software
