@@ -9,6 +9,11 @@ Windows: build_windows.cmd - creates Visual Studio 2019 project
 
 any required libs will be automatically downloaded & installed in correct versions for respective platforms
 
+##  Progress history
+| Task | Commit | Date |
+| ---------- | ------------- | ----------- |
+| Finished readme | ------------- | 2020-03-18 |
+
 ## To do
 - [ ] Software
     - [ ] Build tools
