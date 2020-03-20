@@ -2,21 +2,25 @@
 Semi-autonomous lane keeping system based on C++ & OpenCV 4.x.\
 Project for my engineering thesis at AGH University of Science and Technology [WIMiIP].
 
-
 ## Building
-Linux:   build_linux.sh    - builds whole app\
-Windows: build_windows.cmd - creates Visual Studio 2019 project
+Linux:   `./build.sh`\
+Windows: Using Visual Studio 2019
 
-any required libs will be automatically downloaded & installed in correct versions for respective platforms
+
+## Depencencies
+Linux: `./build.sh install`\
+Windows: Download OpenCV in version 4.1.1 and extract it to `C:\opencv` then copy all files from `C:\opencv\build\x64\vc15\bin` to `VisualStudio\x64\Debug` and `Release` directories
 
 ##  Progress history
 | Task & Commit | Date |
 | ---------- | ----------- |
 | [Finished readme](https://github.com/adamczykpiotr/SemiAutonomousLaneKeepingSystem/commit/bf5befb4afbd0a68cf6ef7d568b5c7bef2e1be17) | 2020-03-18 |
+| [Build tools](https://github.com/adamczykpiotr/SemiAutonomousLaneKeepingSystem/commit/5bde61885038f58fb816b5f0e4133f4470bd098c) | 2020-03-20 |
+
 
 ## To do
 - [ ] Software
-    - [ ] Build tools
+    - [x] Build tools
     - [ ] Road lane recognition
         - [ ] Turn prediction
         - [ ] Histheresis
