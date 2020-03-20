@@ -1,6 +1,9 @@
 # Semi-autonomous lane keeping system
 Semi-autonomous lane keeping system based on C++ & OpenCV 4.x.\
-Project for my engineering thesis at AGH University of Science and Technology [WIMiIP].
+Project for my engineering thesis at AGH University of Science and Technology [WIMiIP].\
+\
+![](https://github.com/adamczykpiotr/SemiAutonomousLaneKeepingSystem/blob/master/preview.gif)
+
 
 ## Building
 Linux:   `./build.sh`\
@@ -28,7 +31,7 @@ Windows: Download OpenCV in version 4.1.1 and extract it to `C:\opencv` then cop
         - [ ] Histheresis
         - [ ] Optimization
             - [ ] Multi-threading
-            - [ ] ARM NEON optimizations?
+            - [ ] ARM NEON optimizations
         - [ ] PID controller for steering angle calculation
 - [ ] Hardware
     - [ ] Opel EPS-4400 reverse engineering
