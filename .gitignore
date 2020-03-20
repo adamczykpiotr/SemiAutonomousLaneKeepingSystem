@@ -1,0 +1,10 @@
+
+app
+*.ipch
+*.opendb
+*.db
+VisualStudio/.vs/LaneKeeping/v16/.suo
+VisualStudio/.vs/OpenCVHelloWorld/v16/.suo
+.vs/VSWorkspaceState.json
+.vs/slnx.sqlite
+.vs/SemiAutonomousLaneKeepingSystem/v16/.suo
