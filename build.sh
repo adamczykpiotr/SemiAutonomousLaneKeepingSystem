@@ -9,4 +9,4 @@ fi
 
 flags="-O3"
 
-g++ src/*.cpp -o app $flags `pkg-config --cflags --libs opencv`
+g++ VisualStudio/LaneKeeping/*.cpp -o app $flags `pkg-config --cflags --libs opencv`
