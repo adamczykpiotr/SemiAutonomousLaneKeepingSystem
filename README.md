@@ -16,12 +16,14 @@ Windows: Download OpenCV in version 4.1.1 and extract it to `C:\opencv` then cop
 | ---------- | ----------- |
 | [Finished readme](https://github.com/adamczykpiotr/SemiAutonomousLaneKeepingSystem/commit/bf5befb4afbd0a68cf6ef7d568b5c7bef2e1be17) | 2020-03-18 |
 | [Build tools](https://github.com/adamczykpiotr/SemiAutonomousLaneKeepingSystem/commit/5bde61885038f58fb816b5f0e4133f4470bd098c) | 2020-03-20 |
+| [Lane detection](https://github.com/adamczykpiotr/SemiAutonomousLaneKeepingSystem/commit/b1bad0931d3f59c01665718d5ac228b2ae21bc87) | 2020-03-20 |
+
 
 
 ## To do
 - [ ] Software
     - [x] Build tools
-    - [ ] Road lane recognition
+    - [x] Road lane recognition
         - [ ] Turn prediction
         - [ ] Histheresis
         - [ ] Optimization
