@@ -7,9 +7,10 @@
 #include "LaneDetection.h"
 #include "Timer.h"
 
-int main() {
+int main(int argc, const char** argv) {
 
-   std::string source = "C://Users//adamc//Desktop//pulpit//output.mp4";
+    std::string source = "C://Users//adamc//Desktop//pulpit//output.mp4";
+    if (argc > 1 && strlen(argv[1]) > 0) source = std::string(argv[1]);
 
     cv::VideoCapture cap(source);
     if (!cap.isOpened()) return -1;
