@@ -56,7 +56,7 @@ https://medium.com/pharos-production/road-lane-recognition-with-opencv-and-ios-a
 https://github.com/MichiMaestre/Lane-Detection-for-Autonomous-Cars
 
 **PID Controller**\
-https://en.wikipedia.org/wiki/PID_controller\
+https://en.wikipedia.org/wiki/PID_controller \
 https://www.youtube.com/watch?v=4Y7zG48uHRo
 
 
