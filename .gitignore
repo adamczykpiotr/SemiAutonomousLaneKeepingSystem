@@ -63,3 +63,4 @@ VisualStudio/LaneKeeping/x64/Debug/LaneDetector.obj
 VisualStudio/LaneKeeping/x64/Release/LaneDetector.obj
 VisualStudio/LaneKeeping/x64/Release/LaneKeeping.tlog/link.delete.1.tlog
 VisualStudio/LaneKeeping/x64/Debug/lanedetection.obj.enc
+*.obj
