@@ -138,12 +138,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Blur.cpp" />
+    <ClCompile Include="Color.cpp" />
+    <ClCompile Include="Crop.cpp" />
+    <ClCompile Include="EdgeDetection.cpp" />
+    <ClCompile Include="ErrorHandler.cpp" />
     <ClCompile Include="LaneDetection.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Wrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Blur.h" />
+    <ClInclude Include="Color.h" />
+    <ClInclude Include="Crop.h" />
+    <ClInclude Include="EdgeDetection.h" />
+    <ClInclude Include="ErrorHandler.h" />
     <ClInclude Include="LaneDetection.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="Wrapper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

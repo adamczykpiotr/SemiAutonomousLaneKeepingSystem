@@ -4,6 +4,9 @@
 #include <iostream>
 
 class Timer {
+	std::string_view m_title;
+	std::chrono::time_point<std::chrono::high_resolution_clock> m_startPoint;
+	long long m_scaler;
 
 public:
 	Timer(std::string_view title, long long scaler = 1) {
@@ -26,10 +29,5 @@ public:
 
 		std::cout << m_title << " took " << duration << " us (" << ms << " ms)\n";
 	}
-
-private:
-	std::string_view m_title;
-	std::chrono::time_point<std::chrono::high_resolution_clock> m_startPoint;
-	long long m_scaler;
 };
 
