@@ -73,3 +73,14 @@ VisualStudio/LaneKeeping/x64/Debug/lanedetection.obj.enc
 *.exe
 *.iobj
 *.ipdb
+VisualStudio/LaneKeeping/x64/Release/LaneKeeping.exe.recipe
+VisualStudio/x64/Debug/opencv_videoio_ffmpeg450_64.dll
+VisualStudio/x64/Debug/opencv_videoio_msmf450_64.dll
+VisualStudio/x64/Debug/opencv_videoio_msmf450_64d.dll
+VisualStudio/x64/Debug/opencv_world450.dll
+VisualStudio/x64/Debug/opencv_world450d.dll
+VisualStudio/x64/Release/opencv_videoio_ffmpeg450_64.dll
+VisualStudio/x64/Release/opencv_videoio_msmf450_64.dll
+VisualStudio/x64/Release/opencv_videoio_msmf450_64d.dll
+VisualStudio/x64/Release/opencv_world450.dll
+VisualStudio/x64/Release/opencv_world450d.dll

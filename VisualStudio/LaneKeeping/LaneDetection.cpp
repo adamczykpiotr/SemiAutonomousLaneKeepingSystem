@@ -218,6 +218,47 @@ inline void LaneDetection::hystheresis(std::array<float, 4> xPositions) {
     }
 }
 
+float LaneDetection::getOffset() {
+
+    cv::Mat frame;
+    s_frame.copyTo(frame);
+
+    //draw left & right lane
+    s_boundaries;
+
+    int lowerCenter = (s_boundaries[0].x + s_boundaries[3].x) / 2;
+    int upperCenter = (s_boundaries[1].x + s_boundaries[2].x) / 2;
+
+
+    
+    
+    //draw left & right lane
+    cv::line(frame, s_boundaries[0], s_boundaries[1], cv::Scalar(255, 255, 255), 2, cv::LINE_AA);
+    cv::line(frame, s_boundaries[2], s_boundaries[3], cv::Scalar(255, 255, 255), 2, cv::LINE_AA);
+
+    
+    
+
+    const int frameHeight = s_frame.rows;
+    const int frameWidth = s_frame.cols;
+
+    const int offset = -50;
+    const int middle = frameWidth / 2 + offset;
+
+    cv::line(frame, cv::Point(lowerCenter, frameHeight), cv::Point(upperCenter, 450), cv::Scalar(255, 255, 255), 8, cv::LINE_AA);
+
+    cv::line(frame, cv::Point(middle, frameHeight), cv::Point(middle, frameHeight * 0.4), cv::Scalar(255, 255, 255), 5, cv::LINE_AA);
+
+    //display processed frame
+#ifdef displayFrames
+    cv::imshow("Center", frame);
+    cv::waitKey(1);
+#endif
+
+
+    return 0.0f;
+}
+
 void LaneDetection::errorHanlder() {
     std::cerr << "An error has occured!\n";
 }
@@ -240,21 +281,23 @@ void LaneDetection::process(cv::Mat& frame) {
     applyMask(); //crop ROI
     houghLines(); // use HoughLinesP
 
-
-    cv::imshow("asd",s_frame);
+#ifdef displayFrames
+    cv::imshow("frame", s_frame);
     cv::waitKey(1);
+#endif
     if (!s_lines.empty()) {
         classifyLines(); //Classify which lines are for left or right lane 
         leastSquaresRegression(); //calculate lane regression
+        
+        //update offset from center
         display(frame);
     } else {
         errorHanlder();
     }
-
 }
 
 void LaneDetection::display(cv::Mat& frame) {
-
+#ifdef displayFrames
     cv::Mat output;
     frame.copyTo(output);
 
@@ -269,5 +312,6 @@ void LaneDetection::display(cv::Mat& frame) {
     //display processed frame
     cv::imshow("Lane detection", frame);
     cv::waitKey(1);
+#endif
 }
 

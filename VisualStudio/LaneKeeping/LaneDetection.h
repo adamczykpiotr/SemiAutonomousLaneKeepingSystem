@@ -3,6 +3,8 @@
 #include <vector>
 #include <array>
 
+#define displayFrames
+
 class LaneDetection {
 
 	static cv::Mat s_frame;
@@ -38,5 +40,7 @@ public:
 	static void setFrame(const cv::Mat& frame);
 	static void process(cv::Mat& frame);
 	static void display(cv::Mat& frame);
+
+	static float getOffset();
 };
 
