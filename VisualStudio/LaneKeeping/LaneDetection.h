@@ -7,6 +7,8 @@
 
 class LaneDetection {
 
+	#define USE_HYSTHERESIS
+
 	static cv::Mat s_frame;
 	static int s_frameCenter;
 	static int s_maxLineHeight;

@@ -138,6 +138,7 @@ inline void LaneDetection::hystheresis(std::array<float, 4> xPositions) {
     s_hystheresisArray[s_hystheresisArrayCounter][2] = cv::Point(xPositions[2], s_frame.rows);
     s_hystheresisArray[s_hystheresisArrayCounter][3] = cv::Point(xPositions[3], s_maxLineHeight);
 
+#ifdef USE_HYSTHERESIS
     if (s_hystheresisArrayFilled) {
 
         std::array<cv::Point, 4> previousRow;
@@ -204,6 +205,8 @@ inline void LaneDetection::hystheresis(std::array<float, 4> xPositions) {
         s_hystheresisArray[s_hystheresisArrayCounter][2] = cv::Point(avgXPositions[2], s_frame.rows);
         s_hystheresisArray[s_hystheresisArrayCounter][3] = cv::Point(avgXPositions[3], s_maxLineHeight);
     }
+
+#endif
 
     s_boundaries[0] = s_hystheresisArray[s_hystheresisArrayCounter][0];
     s_boundaries[1] = s_hystheresisArray[s_hystheresisArrayCounter][1];
