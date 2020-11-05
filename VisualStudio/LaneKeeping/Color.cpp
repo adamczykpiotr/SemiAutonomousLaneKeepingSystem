@@ -5,14 +5,14 @@ void Color::rgb2Gray(const cv::Mat& rgb, cv::Mat& gray) {
 }
 
 void Color::binarize(cv::Mat& grayFrame) {
-#define CANNY
+//#define CANNY
 #ifdef CANNY
 
     cv::Canny(grayFrame, grayFrame, 70, 150);
 
 #else
 
-    cv::threshold(grayFrame, grayFrame, 110, 255, cv::THRESH_BINARY); //threshold trial & error
+    cv::threshold(grayFrame, grayFrame, 140, 255, cv::THRESH_BINARY); //threshold trial & error
 
     cv::Point anchor = cv::Point(-1, -1);
     cv::Mat kernel = cv::Mat(1, 3, CV_32F);

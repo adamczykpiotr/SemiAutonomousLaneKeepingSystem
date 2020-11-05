@@ -5,19 +5,23 @@
 #include "Crop.h"
 
 class EdgeDetection {
-
     static std::vector<cv::Vec4i> s_lines;
     static std::vector<cv::Point> s_rightLines;
     static std::vector<cv::Point> s_leftLines;
-    static std::array<cv::Point, 4> s_boundaries; //????
-    static cv::Vec6f s_laneCoefficients;
+    static cv::Vec4f s_lanePoints;
+
+
+    static const uint8_t averageSampleCount = 5;
+    static uint8_t averageSampleIndex;
+    static std::array<cv::Vec4f, averageSampleCount> averageSamples;
+    static bool averageAvailable;
 
 public:
     static void houghLinesP(cv::Mat& frame);
     static void classify();
-    static void regression();
+    static void regression(cv::Mat& frame);
+    static void average();
 
-    static void print(const cv::Mat& frame);
-        
+    static void print(const cv::Mat& frame);        
 };
 

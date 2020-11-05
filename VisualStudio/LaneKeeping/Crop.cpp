@@ -3,7 +3,7 @@
 //calib
 const cv::Vec2f Crop::s_scale(0.9f, 0.38f);
 const cv::Vec2f Crop::s_offset(0.05f, -0.05f);
-const int Crop::s_centerOffset = 5;
+const int Crop::s_centerOffset = -30;
 
 
 cv::Size Crop::s_originalSize;
@@ -47,7 +47,7 @@ void Crop::init(const cv::VideoCapture& capture) {
 }
 
 void Crop::crop(cv::Mat& frame) {
-    frame = frame(s_croppingRect);
+    frame = frame(s_croppingRect); 
 }
 
 void Crop::ROI(cv::Mat& grayFrame) {

@@ -3,8 +3,11 @@
 std::vector<cv::Vec4i> EdgeDetection::s_lines;
 std::vector<cv::Point> EdgeDetection::s_rightLines;
 std::vector<cv::Point> EdgeDetection::s_leftLines;
-std::array<cv::Point, 4> EdgeDetection::s_boundaries;
-cv::Vec6f EdgeDetection::s_laneCoefficients;
+cv::Vec4f EdgeDetection::s_lanePoints;
+
+uint8_t EdgeDetection::averageSampleIndex = 0;
+bool EdgeDetection::averageAvailable = false;
+std::array<cv::Vec4f, EdgeDetection::averageSampleCount> EdgeDetection::averageSamples;
 
 void EdgeDetection::houghLinesP(cv::Mat& frame){
     s_lines.clear();
@@ -12,7 +15,7 @@ void EdgeDetection::houghLinesP(cv::Mat& frame){
     // CV_8UC1 mat
     //calibrate once every x seconds?
     //InputArray image, OutputArray lines, double rho, double theta, int threshold,double minLineLength = 0, double maxLineGap = 0 );
-    cv::HoughLinesP(frame, s_lines, 1, CV_PI / 180, 20, 50, 5); //rho & theta by trial & error
+    cv::HoughLinesP(frame, s_lines, 1, CV_PI / 180, 20, 50, 30); //convert px values to % of width
 }
 
 void EdgeDetection::classify() {
@@ -46,43 +49,69 @@ void EdgeDetection::classify() {
     }
 }
 
-void EdgeDetection::regression() {
+void EdgeDetection::regression(cv::Mat& frame) {
 
-    std::array<float, 4> xPositions = { 0.f, 0.f, 0.f, 0.f };
-
+    auto interpolate = [](float x, float a, float x0, float y0) {
+        return static_cast<int>(a * (x - x0) + y0);
+    };
     auto size = Crop::getCroppedSize();
-
-    cv::Vec4f leftLane;
-    cv::Vec4f rightLane;
 
     //fit left lane
     if (!s_leftLines.empty()) {
+        cv::Vec4f leftLane;
         cv::fitLine(s_leftLines, leftLane, cv::DIST_L2, 0, 0.01, 0.01);
 
         float a = leftLane[1] / leftLane[0];
-        
-        s_laneCoefficients[0] = a;
-        s_laneCoefficients[1] = leftLane[2];
-        s_laneCoefficients[2] = leftLane[3];
+        //s_lanePoints[0] = a;
+        s_lanePoints[0] = interpolate(0, a, leftLane[2], leftLane[3]); //y for x=0
+        s_lanePoints[1] = interpolate(size.width, a, leftLane[2], leftLane[3]); //y for x=frame.width
     }
-
 
     //fit right lane
     if (!s_rightLines.empty()) {
+        cv::Vec4f rightLane;
         cv::fitLine(s_rightLines, rightLane, cv::DIST_L2, 0, 0.01, 0.01);
-         
-        float a = rightLane[1] / rightLane[0];
 
-        s_laneCoefficients[3] = a;
-        s_laneCoefficients[4] = rightLane[2];
-        s_laneCoefficients[5] = rightLane[3];
+        float a = rightLane[1] / rightLane[0];
+        //s_lanePoints[3] = a;
+        s_lanePoints[2] = interpolate(0, a, rightLane[2], rightLane[3]);
+        s_lanePoints[3] = interpolate(size.width, a, rightLane[2], rightLane[3]);
     }
 }
 
+void EdgeDetection::average() {
 
+    for (uint8_t i = 0; i < 4; i++) averageSamples[averageSampleIndex].val[i] = s_lanePoints[i];
+    
+    if (averageAvailable) {
+        const cv::Vec2f maxSteps = { 0.1, 0.1 };
 
-float f(float x, float a, float x0, float y0) {
-    return a * (x - x0) + y0;
+        //get rolling average of all coefficients
+        float average;
+        for (uint8_t i = 0; i < 4; i++) {
+            average = 0;
+
+            for (int j = 0; j < averageSamples.size(); j++) {
+                if (averageSampleIndex == j) continue;
+                average += averageSamples[j].val[i];
+            }
+            average /= (averageSampleCount - 1);
+            average = 0.9 * average + 0.1 * averageSamples[averageSampleIndex].val[i];
+
+            //hystheresis
+            //float diff = average - s_lanePoints[i];
+            //float maxStep = maxSteps[i % 2];
+
+            averageSamples[averageSampleIndex].val[i] = average;
+            s_lanePoints[i] = average;
+        }
+    }
+
+    averageSampleIndex++;
+    if (averageSampleIndex == averageSampleCount) {
+        averageAvailable = true;
+        averageSampleIndex = 0;
+    }
 }
 
 
@@ -90,8 +119,35 @@ void EdgeDetection::print(const cv::Mat& frame) {
        
     cv::Mat output(frame);
 
+    auto size = Crop::getCroppedSize();
+    for (int i = 0; i < averageSampleCount; i+=2) {
+        cv::line(output, cv::Point(0, averageSamples[i].val[0]), cv::Point(size.width, averageSamples[i].val[1]), cv::Scalar(255, 0, 255), 3, cv::LINE_AA);
+        cv::line(output, cv::Point(0, averageSamples[i].val[2]), cv::Point(size.width, averageSamples[i].val[3]), cv::Scalar(0, 255, 255), 3, cv::LINE_AA);
+    }
+
+
+    //center line
+    auto center = Crop::getFrameCenter();
+    cv::line(output, cv::Point(center, 0), cv::Point(center, size.height), cv::Scalar(0, 255, 0), 1, cv::LINE_AA);
+
+    //lanes
+    auto interpolate = [](float x, float a, float x0, float y0) {
+        return static_cast<int>( a * (x - x0) + y0 ); 
+    };
+    cv::Point a = cv::Point(0, s_lanePoints[0]);
+    cv::Point b = cv::Point(size.width, s_lanePoints[1]);
+
+    cv::Point c = cv::Point(0, s_lanePoints[2]);
+    cv::Point d = cv::Point(size.width, s_lanePoints[3]);
+
+    cv::line(output, a, b, cv::Scalar(255, 255, 255), 3, cv::LINE_AA);
+    cv::line(output, c, d, cv::Scalar(255, 255, 255), 3, cv::LINE_AA);   /*
+
+#define showPoints
+#ifdef showPoints
+
     for (const auto& point : s_leftLines) {
-        cv::circle(output, point, 5, cv::Scalar(255, 0, 255), 5);
+        cv::circle(output, point, 5, cv::Scalar(255, 0, 255), 1);
     }
 
     if (s_leftLines.size() > 1) {
@@ -108,50 +164,11 @@ void EdgeDetection::print(const cv::Mat& frame) {
         for (int i = 0; i < s_rightLines.size() - 1; i += 2) {
             cv::line(output, s_rightLines[i], s_rightLines[i + 1], cv::Scalar(255, 255, 0), 3, cv::LINE_AA);
         }
-
     }
 
-
-
-    //center line
-    auto size = Crop::getCroppedSize();
-    auto center = Crop::getFrameCenter();
-    cv::line(output, cv::Point(center, 0), cv::Point(center, size.height), cv::Scalar(0, 255, 0), 1, cv::LINE_AA);
-
-    auto z = Crop::getCroppedSize();
-
-    /*
-    auto a1 = s_laneCoefficients[0];
-    auto a2 = s_laneCoefficients[3];
-
-    auto x01 = s_laneCoefficients[1];
-    auto x02 = s_laneCoefficients[4];
-
-    auto y01 = s_laneCoefficients[2];
-    auto y02 = s_laneCoefficients[5];
-
-
-    //cross point
-    float xCross = (y02 - y01 + a1 * x01 - a2 * x02) / (a1 - a2);
-
-    std::cout << f(xCross, a1, x01, y01) << "\t";
-    std::cout << f(xCross, a2, x02, y02) << "\n";
-    */
-
-    cv::Point a = cv::Point(0, f(0, s_laneCoefficients[0], s_laneCoefficients[1], s_laneCoefficients[2]));
-    cv::Point b = cv::Point(z.width, f(z.width, s_laneCoefficients[0], s_laneCoefficients[1], s_laneCoefficients[2]));
-
-    cv::Point c = cv::Point(0, f(0, s_laneCoefficients[3], s_laneCoefficients[4], s_laneCoefficients[5]));
-    cv::Point d = cv::Point(z.width, f(z.width, s_laneCoefficients[3], s_laneCoefficients[4], s_laneCoefficients[5]));
-
-    cv::line(output, a, b, cv::Scalar(0, 0, 255), 1, cv::LINE_AA);
-    cv::line(output, c, d, cv::Scalar(0, 0, 255), 1, cv::LINE_AA);
-
-
-    //cv::Point y[4] = { a,b,c,d };
-    //cv::fillConvexPoly(output, y, 4, cv::Scalar(255, 255, 255), cv::LINE_AA, 0);
-
-
+#endif
+*/
+   
     //display processed frame
     cv::imshow("Lines", output);
     cv::waitKey(1);
