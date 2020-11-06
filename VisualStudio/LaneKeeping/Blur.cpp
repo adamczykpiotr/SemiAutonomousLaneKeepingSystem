@@ -24,8 +24,4 @@ void Blur::blur(cv::Mat& frame) {
 #else
     cv::GaussianBlur(frame, frame, cv::Size(size, size), 0, 0);
 #endif
-
-    cv::imshow("frame", frame);
-    cv::waitKey(1);
-
 }
