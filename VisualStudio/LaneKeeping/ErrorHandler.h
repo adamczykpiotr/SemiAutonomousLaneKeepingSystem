@@ -3,7 +3,7 @@
 
 class ErrorHandler {
 public:
-	static enum ErrorCode {
+	enum ErrorCode {
 		VideoCaptureError,
 	};
 
