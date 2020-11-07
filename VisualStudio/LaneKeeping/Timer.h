@@ -26,8 +26,8 @@ public:
 			duration /= m_scaler;
 		}
 		auto ms = duration * 0.001;
-
-		std::cout << m_title << " took " << duration << " us (" << ms << " ms)\n";
+		auto fps = 1000 / ms;
+		std::cout << m_title << " took " << duration << " us (" << ms << " ms) ~ " << fps << " FPS.\n";
 	}
 };
 

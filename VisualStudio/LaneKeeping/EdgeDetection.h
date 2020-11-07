@@ -22,6 +22,8 @@ public:
     static void regression(cv::Mat& frame);
     static void average();
 
+    static int32_t getCenterOffset();
+
     static void print(const cv::Mat& frame);        
 };
 

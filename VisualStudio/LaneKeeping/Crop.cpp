@@ -5,7 +5,6 @@ const cv::Vec2f Crop::s_scale(0.9f, 0.38f);
 const cv::Vec2f Crop::s_offset(0.05f, -0.05f);
 const int Crop::s_centerOffset = -30;
 
-
 cv::Size Crop::s_originalSize;
 cv::Size Crop::s_croppedSize;
 cv::Rect Crop::s_croppingRect;
@@ -33,9 +32,9 @@ void Crop::init(const cv::VideoCapture& capture) {
 
     //create trapezoidal mask
     s_mask = cv::Mat::zeros(s_croppedSize, CV_8U);                             /*     ______________________     */
-    s_maskPoints[0] = cv::Point(0, s_croppedSize.height                  );    /*     |  /              \  |     */
-    s_maskPoints[1] = cv::Point(0.48 * s_croppedSize.width, 0            );    /*     | /                \ |     */
-    s_maskPoints[2] = cv::Point(0.52 * s_croppedSize.width, 0            );    /*     |/                  \|     */
+    s_maskPoints[0] = cv::Point(0, s_croppedSize.height                  );    /*     |   /            \   |     */
+    s_maskPoints[1] = cv::Point(0.48 * s_croppedSize.width, 0            );    /*     |  /              \  |     */
+    s_maskPoints[2] = cv::Point(0.52 * s_croppedSize.width, 0            );    /*     | /                \ |     */
     s_maskPoints[3] = cv::Point(s_croppedSize.width, s_croppedSize.height);    /*     ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅      */
    
 
