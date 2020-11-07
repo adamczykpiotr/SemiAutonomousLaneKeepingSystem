@@ -51,9 +51,10 @@ void EdgeDetection::classify() {
 
 void EdgeDetection::regression(cv::Mat& frame) {
 
-    auto interpolate = [](float x, float a, float x0, float y0) {
-        return static_cast<int>(a * (x - x0) + y0);
+    auto interpolate = [](float y, float a, float x0, float y0) {
+        return ((y - y0) / (a + 0.000001f)) + x0;
     };
+
     auto size = Crop::getCroppedSize();
 
     //fit left lane
@@ -63,8 +64,8 @@ void EdgeDetection::regression(cv::Mat& frame) {
 
         float a = leftLane[1] / leftLane[0];
         //s_lanePoints[0] = a;
-        s_lanePoints[0] = interpolate(0, a, leftLane[2], leftLane[3]); //y for x=0
-        s_lanePoints[1] = interpolate(size.width, a, leftLane[2], leftLane[3]); //y for x=frame.width
+        s_lanePoints[0] = interpolate(0, a, leftLane[2], leftLane[3]); //x for y=0
+        s_lanePoints[1] = interpolate(size.height, a, leftLane[2], leftLane[3]); //x for y=frame.height
     }
 
     //fit right lane
@@ -74,8 +75,8 @@ void EdgeDetection::regression(cv::Mat& frame) {
 
         float a = rightLane[1] / rightLane[0];
         //s_lanePoints[3] = a;
-        s_lanePoints[2] = interpolate(0, a, rightLane[2], rightLane[3]);
-        s_lanePoints[3] = interpolate(size.width, a, rightLane[2], rightLane[3]);
+        s_lanePoints[2] = interpolate(0, a, rightLane[2], rightLane[3]); //x for y=0
+        s_lanePoints[3] = interpolate(size.height, a, rightLane[2], rightLane[3]); //x for y=frame.height
     }
 }
 
@@ -114,6 +115,13 @@ void EdgeDetection::average() {
     }
 }
 
+int32_t EdgeDetection::getCenterOffset() {
+
+    int offset = 1;
+
+    return offset;
+}
+
 
 void EdgeDetection::print(const cv::Mat& frame) {
        
@@ -121,10 +129,9 @@ void EdgeDetection::print(const cv::Mat& frame) {
 
     auto size = Crop::getCroppedSize();
     for (int i = 0; i < averageSampleCount; i+=2) {
-        cv::line(output, cv::Point(0, averageSamples[i].val[0]), cv::Point(size.width, averageSamples[i].val[1]), cv::Scalar(255, 0, 255), 3, cv::LINE_AA);
-        cv::line(output, cv::Point(0, averageSamples[i].val[2]), cv::Point(size.width, averageSamples[i].val[3]), cv::Scalar(0, 255, 255), 3, cv::LINE_AA);
+        cv::line(output, cv::Point(averageSamples[i].val[0], 0), cv::Point(averageSamples[i].val[1], size.height), cv::Scalar(255, 0, 255), 3, cv::LINE_AA);
+        cv::line(output, cv::Point(averageSamples[i].val[2], 0), cv::Point(averageSamples[i].val[3], size.height), cv::Scalar(0, 255, 255), 3, cv::LINE_AA);
     }
-
 
     //center line
     auto center = Crop::getFrameCenter();
@@ -134,16 +141,21 @@ void EdgeDetection::print(const cv::Mat& frame) {
     auto interpolate = [](float x, float a, float x0, float y0) {
         return static_cast<int>( a * (x - x0) + y0 ); 
     };
-    cv::Point a = cv::Point(0, s_lanePoints[0]);
-    cv::Point b = cv::Point(size.width, s_lanePoints[1]);
+    cv::Point a = cv::Point(s_lanePoints[0], 0);
+    cv::Point b = cv::Point(s_lanePoints[1], size.height);
 
-    cv::Point c = cv::Point(0, s_lanePoints[2]);
-    cv::Point d = cv::Point(size.width, s_lanePoints[3]);
+    cv::Point c = cv::Point(s_lanePoints[2], 0);
+    cv::Point d = cv::Point(s_lanePoints[3], size.height);
+
+    auto laneCenter = (s_lanePoints[1] + s_lanePoints[3]) / 2;
+
+    cv::circle(output, cv::Point(laneCenter, size.height), 5, cv::Scalar(0, 255, 0), 10);
+
 
     cv::line(output, a, b, cv::Scalar(255, 255, 255), 3, cv::LINE_AA);
-    cv::line(output, c, d, cv::Scalar(255, 255, 255), 3, cv::LINE_AA);   /*
+    cv::line(output, c, d, cv::Scalar(255, 255, 255), 3, cv::LINE_AA);  
 
-#define showPoints
+//#define showPoints
 #ifdef showPoints
 
     for (const auto& point : s_leftLines) {
@@ -167,7 +179,7 @@ void EdgeDetection::print(const cv::Mat& frame) {
     }
 
 #endif
-*/
+
    
     //display processed frame
     cv::imshow("Lines", output);
